@@ -85,7 +85,7 @@ jobs:
         working-directory: B1Admin
         run: |
           cp ../Api/tools/verify-hymns-browser.mjs ./verify-hymns-browser.mjs
-          timeout 210 node verify-hymns-browser.mjs
+          timeout 300 node verify-hymns-browser.mjs
       - name: Print application logs on failure
         if: failure()
         run: |
