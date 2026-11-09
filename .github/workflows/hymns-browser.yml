@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: hymns-browser-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   browser:
     runs-on: ubuntu-24.04
@@ -81,7 +85,7 @@ jobs:
         working-directory: B1Admin
         run: |
           cp ../Api/tools/verify-hymns-browser.mjs ./verify-hymns-browser.mjs
-          node verify-hymns-browser.mjs
+          timeout 210 node verify-hymns-browser.mjs
       - name: Print application logs on failure
         if: failure()
         run: |
