@@ -1,8 +1,8 @@
 name: Hymns MySQL smoke test
 
 on:
-  push:
-    branches: [codex/verify-hymns-mysql]
+  pull_request:
+    branches: [codex/complete-hymns]
 
 permissions:
   contents: read
