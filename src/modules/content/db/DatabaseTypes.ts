@@ -32,7 +32,7 @@ export interface ContentDatabase {
   calendarBlockouts: CalendarBlockout;
   files: Omit<File, "fileContents">;
   globalStyles: GlobalStyle;
-  hymns: Hymn;
+  hymns: Omit<Hymn, "verses"> & { versesJSON: string };
   links: Link;
   pages: Omit<Page, "sections">;
   pageHistory: PageHistory;

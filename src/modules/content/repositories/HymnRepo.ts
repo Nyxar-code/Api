@@ -11,25 +11,27 @@ export class HymnRepo {
   }
 
   private async create(model: Hymn): Promise<Hymn> {
-    model.id = UniqueIdHelper.shortId();
-    await getDb().insertInto("hymns").values(this.toRow(model)).execute();
-    return model;
+    const draft = { ...model, id: UniqueIdHelper.shortId(), published: false, archived: false };
+    await getDb().insertInto("hymns").values({ ...this.toContentRow(draft), id: draft.id, churchId: draft.churchId }).execute();
+    return draft;
   }
 
-  private async update(model: Hymn): Promise<Hymn> {
-    await getDb().updateTable("hymns").set(this.toRow(model, false) as any)
+  private async update(model: Hymn): Promise<Hymn | undefined> {
+    if (!model.id || !model.churchId) return undefined;
+    await getDb().updateTable("hymns").set(this.toContentRow(model))
       .where("id", "=", model.id)
       .where("churchId", "=", model.churchId)
+      .where("archived", "=", false)
       .execute();
-    return model;
+    return this.load(model.churchId, model.id);
   }
 
   public async delete(churchId: string, id: string) {
-    await getDb().updateTable("hymns").set({ archived: true }).where("id", "=", id).where("churchId", "=", churchId).execute();
+    await getDb().updateTable("hymns").set({ archived: true, published: false }).where("id", "=", id).where("churchId", "=", churchId).execute();
   }
 
   public async setPublished(churchId: string, id: string, published: boolean) {
-    await getDb().updateTable("hymns").set({ published }).where("id", "=", id).where("churchId", "=", churchId).execute();
+    await getDb().updateTable("hymns").set({ published }).where("id", "=", id).where("churchId", "=", churchId).where("archived", "=", false).execute();
   }
 
   public async load(churchId: string, id: string): Promise<Hymn | undefined> {
@@ -52,9 +54,8 @@ export class HymnRepo {
     return row ? this.rowToModel(row) : undefined;
   }
 
-  private toRow(model: Hymn, includeIdentity = true): Record<string, unknown> {
+  private toContentRow(model: Hymn) {
     return {
-      ...(includeIdentity ? { id: model.id, churchId: model.churchId } : {}),
       number: model.number,
       title: model.title,
       language: model.language,
@@ -68,15 +69,16 @@ export class HymnRepo {
       source: model.source,
       copyright: model.copyright,
       license: model.license,
-      attribution: model.attribution,
-      published: !!model.published,
-      archived: !!model.archived
+      attribution: model.attribution
     };
   }
 
-  private rowToModel(row: any): Hymn {
+  private rowToModel({ versesJSON, ...row }: Omit<Hymn, "verses"> & { versesJSON: string }): Hymn {
     let verses: HymnVerse[] = [];
-    try { verses = row.versesJSON ? JSON.parse(row.versesJSON) : []; } catch { verses = []; }
-    return { ...row, verses } as Hymn;
+    try {
+      const parsed: unknown = JSON.parse(versesJSON);
+      if (Array.isArray(parsed)) verses = parsed;
+    } catch { /* Keep legacy malformed rows readable. */ }
+    return { ...row, verses };
   }
 }
