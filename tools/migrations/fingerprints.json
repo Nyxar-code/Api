@@ -1633,6 +1633,148 @@
     }
    ],
    "schemaChanges": 1
+  },
+  "2026-11-09_hymns": {
+   "checks": [
+    {
+     "kind": "table",
+     "table": "hymns",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "id",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "churchId",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "number",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "title",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "language",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "versesJSON",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "chorus",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "author",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "composer",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "translator",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "tune",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "category",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "source",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "copyright",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "license",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "attribution",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "published",
+     "present": true
+    },
+    {
+     "kind": "column",
+     "table": "hymns",
+     "column": "archived",
+     "present": true
+    },
+    {
+     "kind": "index",
+     "table": "hymns",
+     "index": "PRIMARY",
+     "present": true
+    },
+    {
+     "kind": "index",
+     "table": "hymns",
+     "index": "idx_hymns_churchId_number",
+     "present": true
+    },
+    {
+     "kind": "index",
+     "table": "hymns",
+     "index": "idx_hymns_churchId_title",
+     "present": true
+    },
+    {
+     "kind": "index",
+     "table": "hymns",
+     "index": "idx_hymns_churchId_published_archived",
+     "present": true
+    }
+   ],
+   "schemaChanges": 23
   }
  },
  "giving": {
