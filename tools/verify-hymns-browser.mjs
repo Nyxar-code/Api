@@ -19,6 +19,23 @@ try {
   const church = await lookup.json();
   if (!lookup.ok || church.id !== "CHU00000001") throw new Error("Grace demo church fixture is unavailable");
 
+  // Smoke the ordinary visitor and member entry points in the same isolated church.
+  const homeResponse = await publicPage.goto(website + "/", { timeout });
+  if (!homeResponse?.ok()) throw new Error("Visitor homepage failed: " + homeResponse?.status());
+  await expect(publicPage.getByRole("main")).toBeVisible({ timeout });
+  await expect(publicPage.getByRole("heading", { level: 1 }).first()).toBeVisible({ timeout });
+  console.log("Visitor homepage rendered");
+
+  const sermonsResponse = await publicPage.goto(website + "/sermons", { timeout });
+  if (!sermonsResponse?.ok()) throw new Error("Public sermons route failed: " + sermonsResponse?.status());
+  await expect(publicPage.getByRole("main")).toBeVisible({ timeout });
+  console.log("Public sermons route rendered");
+
+  const portalResponse = await mobile.goto(website + "/mobile", { timeout });
+  if (!portalResponse?.ok()) throw new Error("Member portal entry failed: " + portalResponse?.status());
+  await expect(mobile.locator(".mobileAppRoot main")).toBeVisible({ timeout });
+  console.log("Member portal entry rendered at phone width");
+
   console.log("Opening B1Admin");
   await admin.goto(adminUrl + "/hymns", { timeout });
   await admin.locator('input[type="email"]').fill("demo@b1.church", { timeout });
