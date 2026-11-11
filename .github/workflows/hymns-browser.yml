@@ -53,6 +53,11 @@ jobs:
           for project in Api B1Admin B1App; do
             (cd "$project" && yarn install --immutable)
           done
+      - name: Check release candidate compilation
+        run: |
+          (cd Api && yarn tsc)
+          (cd B1Admin && yarn build)
+          (cd B1App && yarn exec tsc --noEmit)
       - name: Migrate and seed the disposable database
         working-directory: Api
         run: |
