@@ -84,7 +84,14 @@ try {
   const readers = [[publicPage, "/hymns"], [mobile, "/mobile/hymns"]];
   const detailUrls = [];
   for (const [page, route] of readers) {
-    await page.goto(website + route, { timeout });
+    const destination = website + route;
+    try {
+      await page.goto(destination, { timeout, waitUntil: "domcontentloaded" });
+    } catch (error) {
+      // Next dev Fast Refresh can navigate to the same URL while a route compiles.
+      if (!String(error).includes(`interrupted by another navigation to "${destination}"`)) throw error;
+      await page.goto(destination, { timeout, waitUntil: "domcontentloaded" });
+    }
     await page.getByRole("link", { name: new RegExp(title) }).click({ timeout });
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible({ timeout });
     await expect(page.getByText(verse, { exact: false })).toBeVisible({ timeout });
