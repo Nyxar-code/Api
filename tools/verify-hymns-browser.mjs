@@ -89,8 +89,8 @@ try {
       await page.goto(destination, { timeout, waitUntil: "domcontentloaded" });
     } catch (error) {
       // Next dev Fast Refresh can navigate to the same URL while a route compiles.
-      if (!String(error).includes(`interrupted by another navigation to "${destination}"`)) throw error;
-      await page.goto(destination, { timeout, waitUntil: "domcontentloaded" });
+      if (!String(error).includes(`interrupted by another navigation to "${destination}"`) || page.url() !== destination) throw error;
+      await page.waitForLoadState("domcontentloaded", { timeout });
     }
     await page.getByRole("link", { name: new RegExp(title) }).click({ timeout });
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible({ timeout });
